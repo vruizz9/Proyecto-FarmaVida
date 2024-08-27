@@ -1,0 +1,179 @@
+body {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif, sans-serif;
+}
+
+.mlat {
+    background-color: rgba(0, 59, 154, 0.875);
+    min-height: 100vh;
+    color: white;
+}
+
+.bienvenida {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    /* Ajusta la altura según sea necesario */
+}
+
+
+/*
+            .bienvenida img {
+                position: initial;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                object-fit: cover;
+            }
+            */
+
+.text-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    /* Ajusta el ancho del desvanecido */
+    height: 60%;
+    align-items: center;
+    text-align: center;
+    display: flow-root;
+    /* Ajusta el color del texto según sea necesario */
+}
+
+
+/*Ajusta el fondo en blanco*/
+
+.fondo_B {
+    border: 1px solid black;
+    border-radius: 30px;
+    height: 90%;
+    margin-top: 30px;
+    width: 90%;
+    left: 40px;
+    background-color: #fff;
+}
+
+
+/* Cuadro de administrador y Empleado */
+
+.flecha_a {
+    border: 2px solid black;
+    margin: 10px;
+    display: flex;
+    width: 80px;
+    background-color: #0056b3;
+}
+
+
+/*BORRAR*/
+
+.Inicio_Sesion img {
+    margin-right: 10px;
+}
+
+.seccion_1 {
+    border: 1px solid black;
+    width: 50%;
+}
+
+.pri_fila {
+    width: 50%;
+    border: 1px solid black;
+    margin: 10px;
+}
+
+.formadm {
+    background-image: url(../IMG/farmacia2.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.text-overlay h1 {
+    width: 50%;
+    margin: 0;
+    font-weight: bold;
+    padding: 20px;
+    /* Ajusta el padding según sea necesario */
+}
+
+.mlat h2 {
+    font-size: medium;
+}
+
+.rol {
+    font-size: 1em;
+    font-weight: 600;
+    display: flex;
+    justify-content: end;
+}
+
+.adm {
+    background-color: rgba(255, 255, 25, 0.831);
+}
+
+.salir {
+    margin-right: 720px;
+}
+
+@media (max-width: 992px) {
+    .logos {
+        text-align: center;
+    }
+    .salir {
+        margin: 0;
+    }
+    .rol {
+        font-size: 0.7em;
+        padding: 10px;
+        justify-content: center;
+    }
+    .adm a {
+        padding: 1px;
+    }
+    .mlat {
+        width: 100%;
+        min-height: auto;
+        height: 100%;
+        order: 1;
+    }
+    .mlat ul {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .mlat ul li {
+        display: flex;
+        justify-content: space-between;
+    }
+    .mlat ul li h2 {
+        display: none;
+    }
+    .bienvenida {
+        order: 2;
+        height: auto;
+    }
+    .bienvenida img {
+        height: 100vh;
+        width: 100%;
+        order: 2;
+        position: relative;
+    }
+    .text-overlay {
+        order: 1;
+        width: 100%;
+        height: 100%;
+        background: none;
+    }
+    .text-overlay h1 {
+        width: 100%;
+        background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1434px) {
+    .salir {
+        margin: auto;
+    }
+}
