@@ -1,22 +1,52 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./auth";
+import "bootstrap/dist/css/bootstrap.min.css";
 
+const usuarios = [
+  { usuario: "Ana Gomez", contraseña: "Ana2024!", rol: "Administrador" },
+  { usuario: "Luis Fernandez", contraseña: "LuisF@2024", rol: "Empleado" },
+];
 
 function Login() {
+  const [formData, setFormData] = useState({ username: "", password: "" });
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [isAdminButtonEnabled, setAdminButtonEnabled] = useState(true);
   const [isEmployeeButtonEnabled, setEmployeeButtonEnabled] = useState(true);
 
   const handleAdminClick = () => {
-    console.log('Botón Administrador clickeado');
+    console.log("Botón Administrador clickeado");
   };
 
   const handleEmployeeClick = () => {
-    console.log('Botón Empleado clickeado');
+    console.log("Botón Empleado clickeado");
   };
 
   const toggleButtons = () => {
     setAdminButtonEnabled(!isAdminButtonEnabled);
     setEmployeeButtonEnabled(!isEmployeeButtonEnabled);
+  };
+
+  const handleChange = ({ target: { id, value } }) => {
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const user = usuarios.find(
+      (u) =>
+        u.usuario === formData.username && u.contraseña === formData.password
+    );
+
+    if (user) {
+      login(user);
+      navigate("/home");
+    } else {
+      setMessage("Usuario o contraseña incorrectos.");
+    }
   };
 
   return (
@@ -25,10 +55,18 @@ function Login() {
         <div className="row border rounded-5 p-3 bg-white shadow box-area">
           <div className="col-md-6 rounded-4 d-flex justify-content-around align-items-center flex-column left-box">
             <div className="featured-image mb-3">
-              <img src="/Assets/Logo_FarmaVida.png" className="img-fluid1 width-style1" alt="Logo de la farmacia" />
+              <img
+                src="/Assets/Logo_FarmaVida.png"
+                className="img-fluid1 width-style1"
+                alt="Logo de la farmacia"
+              />
             </div>
             <div className="featured-image mb-3">
-              <img src="/Assets/img1.png" className="img-fluid2 width-style1" alt="Farmacéutica sonriendo" />
+              <img
+                src="/Assets/img1.png"
+                className="img-fluid2 width-style1"
+                alt="Farmacéutica sonriendo"
+              />
             </div>
           </div>
           <div className="col-md-6 right-box">
@@ -40,46 +78,78 @@ function Login() {
                 <button
                   className="boton btn btn-primary btn-lg fs-6"
                   onClick={handleAdminClick}
-                  disabled={!isAdminButtonEnabled} // Desactiva el botón si isAdminButtonEnabled es false
+                  disabled={!isAdminButtonEnabled}
                 >
                   Soy Administrador
                 </button>
                 <button
                   className="boton btn btn-primary btn-lg fs-6"
                   onClick={handleEmployeeClick}
-                  disabled={!isEmployeeButtonEnabled} // Desactiva el botón si isEmployeeButtonEnabled es false
+                  disabled={!isEmployeeButtonEnabled}
                 >
                   Soy Empleado
                 </button>
               </div>
-              <div className="input-group mb-3">
-                <input type="text" className="form-control form-control-lg bg-light fs-6" placeholder="Correo electrónico" />
-              </div>
-              <div className="input-group mb-1">
-                <input type="password" className="form-control form-control-lg bg-light fs-6" placeholder="Contraseña" />
-              </div>
-              <div className="input-group mb-5 d-flex justify-content-between">
-                <div className="form-check">
-                  <input type="checkbox" className="form-check-input" id="formCheck" />
-                  <label htmlFor="formCheck" className="form-check-label text-secondary">
-                    <small>Recordar inicio de sesión</small>
-                  </label>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group mb-3">
+                  <label htmlFor="username">Usuario</label>
+                  <input
+                    type="text"
+                    className="form-control form-control-lg bg-light fs-6"
+                    id="username"
+                    placeholder="Usuario"
+                    autoComplete="on"
+                    value={formData.username}
+                    onChange={handleChange}
+                  />
                 </div>
-                <div className="forgot">
-                  <small><a href="./recuperar_contrasena.html">¿Olvidó la contraseña?</a></small>
+                <div className="form-group mb-3">
+                  <label htmlFor="password">Contraseña</label>
+                  <input
+                    type="password"
+                    className="form-control form-control-lg bg-light fs-6"
+                    id="password"
+                    placeholder="Contraseña"
+                    autoComplete="on"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
                 </div>
-              </div>
-              <div className="input-group mb-3">
-                <Link to="/home" className="btn btn-lg btn-primary w-100 fs-6">Iniciar sesión</Link>
-              </div>
-              <div className="input-group mb-3">
-                <button className="btn btn-lg btn-light w-100 fs-6" onClick={() => (window.location.href = './admin.html')}>
-                  <img src="/Assets/Logo_Google.png" className="me-2 width-style2" alt="Logo de Google" />
-                  <small>Iniciar sesión con Google</small>
-                </button>
-              </div>
+                <div className="input-group mb-5 d-flex justify-content-between">
+                  <div className="form-check">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="formCheck"
+                    />
+                    <label
+                      htmlFor="formCheck"
+                      className="form-check-label text-secondary"
+                    >
+                      <small>Recordar inicio de sesión</small>
+                    </label>
+                  </div>
+                  <div className="forgot">
+                    <small>
+                      <a href="./recuperar_contrasena.html">
+                        ¿Olvidó la contraseña?
+                      </a>
+                    </small>
+                  </div>
+                </div>
+                <Link
+                  to="/home"
+                  type="submit"
+                  className="btn btn-primary w-100"
+                >
+                  Iniciar
+                </Link>
+                {message && <div className="mt-3 text-center">{message}</div>}
+              </form>
               <div className="row">
-                <small>¿No tiene una cuenta? <Link to="/registro">Registrarse</Link></small>
+                <small>
+                  ¿No tiene una cuenta? <Link to="/registro">Registrarse</Link>
+                </small>
               </div>
             </div>
           </div>
@@ -87,7 +157,9 @@ function Login() {
       </div>
       <div className="d-flex justify-content-center mt-3">
         <button onClick={toggleButtons} className="btn btn-secondary">
-          {isAdminButtonEnabled && isEmployeeButtonEnabled ? 'Desactivar Botones' : 'Activar Botones'}
+          {isAdminButtonEnabled && isEmployeeButtonEnabled
+            ? "Desactivar Botones"
+            : "Activar Botones"}
         </button>
       </div>
     </main>
