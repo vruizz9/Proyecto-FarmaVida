@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function registro() {
   return (
@@ -26,11 +27,7 @@ function registro() {
                             <button className="boton btn btn-primary btn-lg fs-6">Soy Empleado</button>
                         </div>
                         <div className="input-group mb-3">
-                            <input type="text" className="form-control form-control-lg bg-light fs-6" placeholder="Nombre"/>
-                        </div>
-                        <div className="input-group mb-3">
-                            <input type="text" className="form-control form-control-lg bg-light fs-6"
-                                placeholder="Correo electrónico"/>
+                            <input type="text" className="form-control form-control-lg bg-light fs-6" placeholder="Usuario"/>
                         </div>
                         <div className="input-group mb-3">
                             <input type="password" className="form-control form-control-lg bg-light fs-6"

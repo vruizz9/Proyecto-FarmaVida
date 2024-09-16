@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./auth";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -12,40 +11,32 @@ const usuarios = [
 function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
+  const [selectedRole, setSelectedRole] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [isAdminButtonEnabled, setAdminButtonEnabled] = useState(true);
-  const [isEmployeeButtonEnabled, setEmployeeButtonEnabled] = useState(true);
-
-  const handleAdminClick = () => {
-    console.log("Botón Administrador clickeado");
-  };
-
-  const handleEmployeeClick = () => {
-    console.log("Botón Empleado clickeado");
-  };
-
-  const toggleButtons = () => {
-    setAdminButtonEnabled(!isAdminButtonEnabled);
-    setEmployeeButtonEnabled(!isEmployeeButtonEnabled);
-  };
 
   const handleChange = ({ target: { id, value } }) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleRoleSelect = (role) => {
+    setSelectedRole(role);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const user = usuarios.find(
       (u) =>
-        u.usuario === formData.username && u.contraseña === formData.password
+        u.usuario === formData.username && 
+        u.contraseña === formData.password && 
+        u.rol === selectedRole
     );
 
     if (user) {
       login(user);
       navigate("/home");
     } else {
-      setMessage("Usuario o contraseña incorrectos.");
+      setMessage("Usuario, contraseña o rol incorrectos.");
     }
   };
 
@@ -75,17 +66,19 @@ function Login() {
                 <h2>Iniciar Sesión</h2>
               </div>
               <div className="btns">
-                <button
-                  className="boton btn btn-primary btn-lg fs-6"
-                  onClick={handleAdminClick}
-                  disabled={!isAdminButtonEnabled}
+              <button
+                  className={`btn btn-lg fs-6 ${
+                    selectedRole === "Administrador" ? "btn-success" : "btn-primary"
+                  }`}
+                  onClick={() => handleRoleSelect("Administrador")}
                 >
                   Soy Administrador
                 </button>
                 <button
-                  className="boton btn btn-primary btn-lg fs-6"
-                  onClick={handleEmployeeClick}
-                  disabled={!isEmployeeButtonEnabled}
+                  className={`btn btn-lg fs-6 ms-2 ${
+                    selectedRole === "Empleado" ? "btn-success" : "btn-primary"
+                  }`}
+                  onClick={() => handleRoleSelect("Empleado")}
                 >
                   Soy Empleado
                 </button>
@@ -137,14 +130,13 @@ function Login() {
                     </small>
                   </div>
                 </div>
-                <Link
-                  to="/home"
+                <button
                   type="submit"
                   className="btn btn-primary w-100"
                 >
-                  Iniciar
-                </Link>
-                {message && <div className="mt-3 text-center">{message}</div>}
+                  Iniciar Sesión
+                </button>
+                {message && <div className="mt-3 text-center text-danger">{message}</div>}
               </form>
               <div className="row">
                 <small>
@@ -154,13 +146,6 @@ function Login() {
             </div>
           </div>
         </div>
-      </div>
-      <div className="d-flex justify-content-center mt-3">
-        <button onClick={toggleButtons} className="btn btn-secondary">
-          {isAdminButtonEnabled && isEmployeeButtonEnabled
-            ? "Desactivar Botones"
-            : "Activar Botones"}
-        </button>
       </div>
     </main>
   );

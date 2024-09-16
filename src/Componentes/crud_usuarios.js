@@ -1,8 +1,9 @@
 import React from "react";
 import { useAuth } from "./auth";
 import { Link, useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-function Home() {
+function CrudUsu() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -10,6 +11,21 @@ function Home() {
     logout();
     navigate('/');
   };
+
+  const handleDelete = (id) => {
+    console.log("Eliminar usuario con id:", id);
+  };
+
+  const handleEdit = (id) => {
+    console.log("Modificar usuario con id:", id);
+    navigate(`/editar_usuario/${id}`);
+  };
+
+  const handleAdd = () => {
+    console.log("Agregar nuevo usuario");
+    navigate('/agregar_usuario');
+  };
+
   return (
     <div>
       <nav>
@@ -36,7 +52,7 @@ function Home() {
       <div className="container-fluid">
         <div className="op row d-flex">
           <div className="mlat col-2 md-2">
-            <ul className="list-unstyled">
+          <ul className="list-unstyled">
               {user.rol === "Administrador" && (
                 <>
                   <li className="nav-item">
@@ -187,16 +203,87 @@ function Home() {
               )}
             </ul>
           </div>
-          <section className="bienvenida col-lg p-0">
-            <div>
-              <div className="text-overlay">
-                <h1>
-                  ¡Bienvenido al inventario
-                  <br />
-                  de FarmaVida!
-                  <br />
-                  {user.rol === 'Empleado' ? 'Empleado' : 'Administrador'}
-                </h1>
+          <section className="gestionUsuario col-lg p-0">
+            <div className="mainContainer">
+              <a href="./gestion_usuario.html" className="boton-atras btn back-button flecha_a">
+                <img src="./resources/flecha_atras.png" alt="flecha_a" />
+              </a>
+              <div className="container">
+                <button
+                  className="btn btn-success mb-3"
+                  onClick={handleAdd}
+                >
+                  Agregar Usuario
+                </button>
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Contraseña</th>
+                      <th scope="col">Teléfono</th>
+                      <th scope="col">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Sandra</td>
+                      <td>..........</td>
+                      <td>3025827546</td>
+                      <td>
+                        <button
+                          className="btn btn-primary me-2"
+                          onClick={() => handleEdit(1)}
+                        >
+                          Modificar
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(1)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Alexander</td>
+                      <td>..............</td>
+                      <td>3213482146</td>
+                      <td>
+                        <button
+                          className="btn btn-primary me-2"
+                          onClick={() => handleEdit(2)}
+                        >
+                          Modificar
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(2)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Charid</td>
+                      <td>........</td>
+                      <td>3224848149</td>
+                      <td>
+                        <button
+                          className="btn btn-primary me-2"
+                          onClick={() => handleEdit(3)}
+                        >
+                          Modificar
+                        </button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(3)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </section>
@@ -206,4 +293,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default CrudUsu;

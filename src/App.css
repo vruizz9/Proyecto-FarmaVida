@@ -127,8 +127,6 @@ body{
     font-size: medium;
 }
 .rol{
-    font-size: 1em;
-    font-weight: 600;
     display: flex;
     justify-content: end;
 }
@@ -140,8 +138,35 @@ body{
     align-self: center;
 }
 .img_L{
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
+}
+
+.gestionUsuario{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mainContainer{
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    background-color: #fff;
+    width: 94%;
+    height: 86vh;
+    border-radius: 30px;
+}
+.botones1{
+    text-size-adjust: auto;
+    width: 200px !important;
+    height: 200px;
+    background-color: #003b9adf !important;
+    border-radius: 15px !important;
+}
+.botones p {
+    text-align: center;
+    margin: 10px auto;
 }
 @media (max-width: 992px){
     .logos{
