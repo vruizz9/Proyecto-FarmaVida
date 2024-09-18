@@ -1,29 +1,111 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "./auth";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import CryptoJS from "crypto-js";
 
 function CrudUsu() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [usuarios, setUsuarios] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editUser, setEditUser] = useState(null);
+  const [formData, setFormData] = useState({
+    id: "",
+    usuario: "",
+    email: "",
+    password: "",
+  });
+
+  const secretKey = "your-secret-key";
+
+  const cargarUsuarios = () => {
+    const usuariosGuardados = localStorage.getItem("usuarios");
+    if (usuariosGuardados) {
+      const decryptedUsuarios = JSON.parse(usuariosGuardados).map(user => ({
+        ...user,
+        password: decryptPassword(user.password),
+      }));
+      setUsuarios(decryptedUsuarios);
+    }
+  };
+
+  useEffect(() => {
+    cargarUsuarios();
+  },);
+
+  const guardarUsuarios = (nuevosUsuarios) => {
+    const encryptedUsuarios = nuevosUsuarios.map(user => ({
+      ...user,
+      password: encryptPassword(user.password),
+    }));
+    setUsuarios(nuevosUsuarios);
+    localStorage.setItem("usuarios", JSON.stringify(encryptedUsuarios));
+  };
+
+  const encryptPassword = (password) => {
+    return CryptoJS.AES.encrypt(password, secretKey).toString();
+  };
+
+  const decryptPassword = (encryptedPassword) => {
+    const bytes = CryptoJS.AES.decrypt(encryptedPassword, secretKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  };
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+  };
+
+  const handleGoBack = () => {
+    navigate(-1);
   };
 
   const handleDelete = (id) => {
-    console.log("Eliminar usuario con id:", id);
+    const nuevosUsuarios = usuarios.filter((usuario) => usuario.id !== id);
+    guardarUsuarios(nuevosUsuarios);
   };
 
-  const handleEdit = (id) => {
-    console.log("Modificar usuario con id:", id);
-    navigate(`/editar_usuario/${id}`);
+  const handleShowForm = (user = null) => {
+    if (user) {
+      setEditUser(user);
+      setFormData({
+        id: user.id,
+        usuario: user.usuario,
+        email: user.email,
+        password: decryptPassword(user.password),
+      });
+    } else {
+      setEditUser(null);
+      setFormData({
+        id: "",
+        usuario: "",
+        email: "",
+        password: "",
+      });
+    }
+    setShowForm(!showForm);
   };
 
-  const handleAdd = () => {
-    console.log("Agregar nuevo usuario");
-    navigate('/agregar_usuario');
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editUser) {
+      const nuevosUsuarios = usuarios.map((usuario) =>
+        usuario.id === formData.id ? { ...formData, password: encryptPassword(formData.password) } : usuario
+      );
+      guardarUsuarios(nuevosUsuarios);
+    } else {
+      const nuevosUsuarios = [...usuarios, { ...formData, id: Date.now(), password: encryptPassword(formData.password) }];
+      guardarUsuarios(nuevosUsuarios);
+    }
+    setShowForm(false);
   };
 
   return (
@@ -52,7 +134,7 @@ function CrudUsu() {
       <div className="container-fluid">
         <div className="op row d-flex">
           <div className="mlat col-2 md-2">
-          <ul className="list-unstyled">
+            <ul className="list-unstyled">
               {user.rol === "Administrador" && (
                 <>
                   <li className="nav-item">
@@ -204,87 +286,118 @@ function CrudUsu() {
             </ul>
           </div>
           <section className="gestionUsuario col-lg p-0">
-            <div className="mainContainer">
-              <a href="./gestion_usuario.html" className="boton-atras btn back-button flecha_a">
-                <img src="./resources/flecha_atras.png" alt="flecha_a" />
-              </a>
-              <div className="container">
-                <button
-                  className="btn btn-success mb-3"
-                  onClick={handleAdd}
-                >
-                  Agregar Usuario
-                </button>
-                <table className="table table-striped">
-                  <thead>
+            <div className="mainContainer1">
+              <button
+                onClick={handleGoBack}
+                className="boton-atras btn btn-lg btn-primary fs-6"
+              >
+                <img src="/Assets/flecha_atras.png" alt="flecha_a" />
+              </button>
+              <button
+                className="btn btn-success mb-3"
+                onClick={() => handleShowForm()}
+              >
+                Agregar Usuario
+              </button>
+
+              {showForm && (
+                <form onSubmit={handleSubmit} className="mb-4" style={{width: '80%',margin: 'auto'}}>
+                  <div className="mb-3">
+                    <label htmlFor="usuario" className="form-label">
+                      Usuario
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="usuario"
+                      name="usuario"
+                      value={formData.usuario}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">
+                      Correo
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="password" className="form-label">
+                      Contraseña
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary">
+                    {editUser ? "Modificar Usuario" : "Agregar Usuario"}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary ms-2"
+                    onClick={() => handleShowForm()}
+                  >
+                    Cancelar
+                  </button>
+                </form>
+              )}
+
+              <table className="table table-striped" style={{width: '80%',margin: 'auto'}}>
+                <thead>
+                  <tr>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Correo</th>
+                    <th scope="col">Contraseña</th>
+                    <th scope="col">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {usuarios.length > 0 ? (
+                    usuarios.map((usuario) => (
+                      <tr key={usuario.id}>
+                        <td>{usuario.usuario}</td>
+                        <td>{usuario.email}</td>
+                        <td>{decryptPassword(usuario.password)}</td>
+                        <td>
+                          <button
+                            className="btn btn-primary me-2"
+                            onClick={() => handleShowForm(usuario)}
+                          >
+                            Modificar
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => handleDelete(usuario.id)}
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
                     <tr>
-                      <th scope="col">Nombre</th>
-                      <th scope="col">Contraseña</th>
-                      <th scope="col">Teléfono</th>
-                      <th scope="col">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Sandra</td>
-                      <td>..........</td>
-                      <td>3025827546</td>
-                      <td>
-                        <button
-                          className="btn btn-primary me-2"
-                          onClick={() => handleEdit(1)}
-                        >
-                          Modificar
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleDelete(1)}
-                        >
-                          Eliminar
-                        </button>
+                      <td colSpan="4" className="text-center">
+                        No hay usuarios registrados.
                       </td>
                     </tr>
-                    <tr>
-                      <td>Alexander</td>
-                      <td>..............</td>
-                      <td>3213482146</td>
-                      <td>
-                        <button
-                          className="btn btn-primary me-2"
-                          onClick={() => handleEdit(2)}
-                        >
-                          Modificar
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleDelete(2)}
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Charid</td>
-                      <td>........</td>
-                      <td>3224848149</td>
-                      <td>
-                        <button
-                          className="btn btn-primary me-2"
-                          onClick={() => handleEdit(3)}
-                        >
-                          Modificar
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => handleDelete(3)}
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                  )}
+                </tbody>
+              </table>
             </div>
           </section>
         </div>

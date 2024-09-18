@@ -157,6 +157,12 @@ body{
     height: 86vh;
     border-radius: 30px;
 }
+.mainContainer1{
+    background-color: #fff;
+    width: 94%;
+    height: 86vh;
+    border-radius: 30px;
+}
 .botones1{
     text-size-adjust: auto;
     width: 200px !important;
@@ -167,6 +173,10 @@ body{
 .botones p {
     text-align: center;
     margin: 10px auto;
+}
+.boton-atras{
+    margin: 30px;
+    padding: 8px !important;
 }
 @media (max-width: 992px){
     .logos{

@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./auth";
 import "bootstrap/dist/css/bootstrap.min.css";
-
-const usuarios = [
-  { usuario: "Ana Gomez", contraseña: "Ana2024!", rol: "Administrador" },
-  { usuario: "Luis Fernandez", contraseña: "LuisF@2024", rol: "Empleado" },
-];
+import { Alert } from "react-bootstrap";
 
 function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ text: "", type: "" });
   const [selectedRole, setSelectedRole] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -25,18 +21,24 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const user = usuarios.find(
-      (u) =>
-        u.usuario === formData.username && 
-        u.contraseña === formData.password && 
-        u.rol === selectedRole
-    );
 
-    if (user) {
-      login(user);
-      navigate("/home");
+    const registroLocal = localStorage.getItem("datosUsuario");
+    const usuariosRegistrados = registroLocal ? JSON.parse(registroLocal) : null;
+
+    if (usuariosRegistrados) {
+      const user = 
+        (usuariosRegistrados.usuario === formData.username && 
+        usuariosRegistrados.password === formData.password &&
+        usuariosRegistrados.rol === selectedRole);
+
+      if (user) {
+        login(usuariosRegistrados);
+        navigate("/home");
+      } else {
+        setMessage({ text: "Usuario, contraseña o rol incorrectos.", type: "danger" });
+      }
     } else {
-      setMessage("Usuario, contraseña o rol incorrectos.");
+      setMessage({ text: "No se encontraron registros. Regístrese primero.", type: "warning" });
     }
   };
 
@@ -66,7 +68,7 @@ function Login() {
                 <h2>Iniciar Sesión</h2>
               </div>
               <div className="btns">
-              <button
+                <button
                   className={`btn btn-lg fs-6 ${
                     selectedRole === "Administrador" ? "btn-success" : "btn-primary"
                   }`}
@@ -83,6 +85,13 @@ function Login() {
                   Soy Empleado
                 </button>
               </div>
+
+              {message.text && (
+                <Alert variant={message.type} className="mt-3">
+                  {message.text}
+                </Alert>
+              )}
+
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
                   <label htmlFor="username">Usuario</label>
@@ -136,7 +145,6 @@ function Login() {
                 >
                   Iniciar Sesión
                 </button>
-                {message && <div className="mt-3 text-center text-danger">{message}</div>}
               </form>
               <div className="row">
                 <small>
