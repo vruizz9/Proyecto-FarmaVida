@@ -2,8 +2,8 @@ import React from "react";
 import { useAuth } from "./auth";
 import { Link, useNavigate } from "react-router-dom";
 
-function Home() {
-  const { user, logout } = useAuth();
+function Entrada() {
+    const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -77,7 +77,8 @@ function Home() {
                           width="70px"
                           title="Entradas y Salidas"
                         />
-                        <h2>Registro de entradas</h2></Link>
+                        <h2>Registro de entradas</h2>
+                      </Link>
                     </div>
                   </li>
                   <li className="nav-item ">
@@ -90,7 +91,8 @@ function Home() {
                           width="70px"
                           title="Entradas y Salidas"
                         />
-                        <h2>Registro de salidas</h2></Link>
+                        <h2>Registro de salidas</h2>
+                      </Link>
                     </div>
                   </li>
                   <li className="nav-item ">
@@ -109,15 +111,19 @@ function Home() {
                   </li>
                   <li className="nav-item ">
                     <div className="d-flex flex-column align-items-center mt-4">
-                    <Link to="/gestion_usuarios" className="nav-link text-center">
-                    <img
+                      <Link
+                        to="/gestion_usuarios"
+                        className="nav-link text-center"
+                      >
+                        <img
                           src="/Assets/usuario1.png"
                           className="img_L"
                           alt="Icono de gestión de usuarios"
                           width="70px"
                           title="Gestion de usuarios"
                         />
-                        <h2>Gestión de usuario</h2></Link>
+                        <h2>Gestión de usuario</h2>
+                      </Link>
                     </div>
                   </li>
                 </>
@@ -185,23 +191,12 @@ function Home() {
               )}
             </ul>
           </div>
-          <section className="bienvenida col-lg p-0">
-            <div>
-              <div className="text-overlay">
-                <h1>
-                  ¡Bienvenido al inventario
-                  <br />
-                  de FarmaVida!
-                  <br />
-                  {user.rol === 'Empleado' ? 'Empleado' : 'Administrador'}
-                </h1>
-              </div>
-            </div>
-          </section>
         </div>
       </div>
+
+      
     </div>
   );
 }
 
-export default Home;
+export default Entrada;

@@ -7,6 +7,7 @@ import Home from './Componentes/home';
 import Registro from './Componentes/registro';
 import GestionUsu from './Componentes/gestion_usuarios';
 import CrudUsu from './Componentes/crud_usuarios';
+import Entrada from './Componentes/entrada';
 import { AuthProvider } from './Componentes/auth';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/gestion_usuarios" element={<GestionUsu />} />
           <Route path="/crud_usuarios" element={<CrudUsu />} />
+          <Route path="/entrada" element={<Entrada />} />
         </Routes>
       </Router>
     </AuthProvider>
